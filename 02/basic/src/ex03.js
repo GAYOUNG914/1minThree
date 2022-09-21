@@ -11,13 +11,17 @@ const canvas = document.querySelector('#three-canvas');
 const renderer = new THREE.WebGLRenderer({ 
     canvas,
     antialias: true, //선을 부드럽게 만들어주는 안티엘리어스 작업. 전체적인 성능은 떨어질 수 있다
+    alpha: true //배경 흰색
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 // console.log(window.devicePixelRatio);//현재 디바이스가 사용하는 픽셀의 밀도
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); //레티나 사용해서 캔버스 크기를 배수로 늘리고 다시 압축시켜서 화질이 좋아보이게 만들어준다.(three.js에서 고해상도로 표현하게 하는 api))
+renderer.setClearColor('salmon'); //배경 색 바꾸기
+renderer.setClearAlpha(0.5); //배경 투명도
 
 //Scene
 const scene = new THREE.Scene();
+scene.background = new THREE.Color('blue');//renderer 보다 위에 있음
 
 //Camera
 

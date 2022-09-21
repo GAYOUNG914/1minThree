@@ -11,13 +11,17 @@ const canvas = document.querySelector('#three-canvas');
 const renderer = new THREE.WebGLRenderer({ 
     canvas,
     antialias: true, //선을 부드럽게 만들어주는 안티엘리어스 작업. 전체적인 성능은 떨어질 수 있다
+    // alpha: true //배경 흰색
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 // console.log(window.devicePixelRatio);//현재 디바이스가 사용하는 픽셀의 밀도
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); //레티나 사용해서 캔버스 크기를 배수로 늘리고 다시 압축시켜서 화질이 좋아보이게 만들어준다.(three.js에서 고해상도로 표현하게 하는 api))
+// renderer.setClearColor('salmon'); //배경 색 바꾸기
+// renderer.setClearAlpha(0.5); //배경 투명도
 
 //Scene
 const scene = new THREE.Scene();
+// scene.background = new THREE.Color('blue');//renderer 보다 위에 있음
 
 //Camera
 
@@ -51,13 +55,23 @@ camera.lookAt(0,0,0);
 // camera.updateProjectionMatrix();
 scene.add(camera);
 
+const light = new THREE.DirectionalLight(0xffffff, 1); // 인자 : 빛 색깔, 빛 강도
+light.position.x = 3;
+light.position.z = 2;
+scene.add(light);
+
 //Mesh //Mesh는 geometry, material로 이루어짐
 const geometry = new THREE.BoxGeometry(1,1,1);
-const material = new THREE.MeshBasicMaterial({
-    // color: 0xff0000
-    // color: 'red'
-    color: '#ff0000'
-});
+// const material = new THREE.MeshBasicMaterial({ //빛에 반응을 하지 않는 material 생성
+//     // color: 0xff0000
+//     // color: 'red'
+//     color: '#ff0000'
+// });
+const material = new THREE.MeshStandardMaterial({ //빛에 반응을 하지 않는 material 생성
+        // color: 0xff0000
+        // color: 'red'
+        color: '#ff0000'
+    });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 

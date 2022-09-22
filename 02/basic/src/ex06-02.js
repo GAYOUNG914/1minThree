@@ -70,18 +70,20 @@ scene.add(mesh);
 // 그리기
 
 //디바이스간의 성능 갭을 줄여주기 위함
-const clock = new THREE.Clock();
+//직접 자바스크립트 계산 사용해보기 : three.js 아닐 때도 사용할 수 있다는 장점이 있음
+let oldTime = Date.now();
 
 function draw() {
-    // const time = clock.getElapsedTime();//함수시작 후 경과시간 카운트(늘어나는 가변적 값)
-    const delta = clock.getDelta();//함수가 다시 시작 되기 전 간격(고정 값)
+    const newTime = Date.now();
+    const deltaTime = newTime - oldTime;
+    oldTime = newTime; //컴퓨터 화면 주사율에 따라 값이 달라질거임
     //각도는 radian을 사용
     //360도는 2파이
     // mesh.rotation.y += 0.01;
-    // mesh.rotation.y += THREE.MathUtils.degToRad(0.5); // 회전율을 라디안으로 바꿔주는 api
-    mesh.rotation.y += 2 * delta; //어떤 디바이스에서든 같은 시간동안 같은 거리 움직이기
-    // mesh.position.y += 0.01; // 회전율을 라디안으로 바꿔주는 api
-    mesh.position.y += 1 * delta;
+    // mesh.rotation.y += THREE.MathUtils.degToRad(0.5);
+    // mesh.rotation.y += 2 * delta; 
+    // mesh.position.y += 1 * delta;
+    mesh.rotation.y += 0.001 * deltaTime;
     if(mesh.position.y > 1){
         mesh.position.y = 0;
     }

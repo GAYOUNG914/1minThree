@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
-// ----- 주제: 기본 장면
+// ----- 주제: 라이브러리를 이용한 애니메이션
 
 export default function example() {
 //Renderer
@@ -21,32 +22,34 @@ renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); //레티나 사용�
 
 //Scene
 const scene = new THREE.Scene();
-// scene.background = new THREE.Color('blue');//renderer 보다 위에 있음
+  //fog
+scene.fog = new THREE.Fog('black',3,7)
 
 //Camera
 
 //원근카메라 (Perspective Camera)
-// const camera = new THREE.PerspectiveCamera(
-//     75, //시야각(field of view)
-//     window.innerWidth / window.innerHeight, //종횡비(aspect)
-//     0.1, //near
-//     1000 //far
-// );
+const camera = new THREE.PerspectiveCamera(
+    75, //시야각(field of view)
+    window.innerWidth / window.innerHeight, //종횡비(aspect)
+    0.1, //near
+    1000 //far
+);
 
 // camera.position.x = 1;
 // camera.position.y = 2;
 // camera.position.z = 5;
 
 //직교카메라 (Orthographic Camera)
-const camera = new THREE.OrthographicCamera(
-    -(window.innerWidth / window.innerHeight), //left
-    window.innerWidth / window.innerHeight, //right
-    1, //top
-    -1, //bottom
-    0.1,
-    1000
-);
+// const camera = new THREE.OrthographicCamera(
+//     -(window.innerWidth / window.innerHeight), //left
+//     window.innerWidth / window.innerHeight, //right
+//     1, //top
+//     -1, //bottom
+//     0.1,
+//     1000
+// );
 
+camera.position.y = 1;
 camera.position.z = 5;
 camera.lookAt(0,0,0);
 //줌아웃같은 효과를 원하면 줌 api 써야됨. 업데이트 프로젝션 매트릭스 호출도 꼭 같이.
@@ -55,8 +58,9 @@ camera.lookAt(0,0,0);
 scene.add(camera);
 
 const light = new THREE.DirectionalLight(0xffffff, 1); // 인자 : 빛 색깔, 빛 강도
-light.position.x = 0;
-light.position.z = 2;
+light.position.x = 1;
+light.position.y = 3;
+light.position.z = 5;
 scene.add(light);
 
 //Mesh //Mesh는 geometry, material로 이루어짐
@@ -64,32 +68,36 @@ const geometry = new THREE.BoxGeometry(1,1,1);
 const material = new THREE.MeshStandardMaterial({ 
         color: '#ff0000'
     });
+
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
 // 그리기
 
 //디바이스간의 성능 갭을 줄여주기 위함
-const clock = new THREE.Clock();
+//직접 자바스크립트 계산 사용해보기 : three.js 아닐 때도 사용할 수 있다는 장점이 있음
+let oldTime = Date.now();
 
 function draw() {
-    // const time = clock.getElapsedTime();//함수시작 후 경과시간 카운트(늘어나는 가변적 값)
-    const delta = clock.getDelta();//함수가 다시 시작 되기 전 간격(고정 값)
-    //각도는 radian을 사용
-    //360도는 2파이
-    // mesh.rotation.y += 0.01;
-    // mesh.rotation.y += THREE.MathUtils.degToRad(0.5); // 회전율을 라디안으로 바꿔주는 api
-    mesh.rotation.y += 2 * delta; //어떤 디바이스에서든 같은 시간동안 같은 거리 움직이기
-    // mesh.position.y += 0.01; // 회전율을 라디안으로 바꿔주는 api
-    mesh.position.y += 1 * delta;
-    if(mesh.position.y > 1){
-        mesh.position.y = 0;
-    }
+    const newTime = Date.now();
+    const deltaTime = newTime - oldTime;
+    oldTime = newTime; //컴퓨터 화면 주사율에 따라 값이 달라질거임
+    
     renderer.render(scene, camera);
 
     // window.requestAnimationFrame(draw); // 애니매이션 줄 때 이 api 자주 사용
     renderer.setAnimationLoop(draw); // ar, vr 만들 때 이 api 자주 사용
 }
+
+    //gsap
+    gsap.to(
+        mesh.position,
+        {
+            duration: 1,
+            y: 2,
+            z: 2
+        }
+    )
 
     function setSize() {
         //카메라

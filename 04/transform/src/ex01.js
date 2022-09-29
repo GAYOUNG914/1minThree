@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 
-// ----- 주제: 
+// ----- 주제: 위치 position
 
 export default function example() {
 	// Renderer
@@ -59,6 +59,9 @@ export default function example() {
 
 	function draw() {
 		const delta = clock.getDelta();
+
+        // mesh.position.y = 2;
+        mesh.position.s
 
 		renderer.render(scene, camera);
 		renderer.setAnimationLoop(draw);
